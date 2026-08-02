@@ -1,41 +1,28 @@
-# 03 · Real-Time Clickstream Pipeline (Kafka + Spark Structured Streaming)
+<div align="center">
 
-> **Target role: Data Engineer**
-> **Resume-ready label:** *"Real-time clickstream pipeline — Kafka + Spark Structured Streaming: 10K events/sec, <500ms end-to-end latency, session analytics"*
+# Real-Time Clickstream Pipeline
 
-Streaming is the strongest Data-Engineer differentiator. A producer simulates clickstream events into Kafka; a Spark Structured Streaming job aggregates sessions, top pages, and anomalies in real time and writes results to storage/dashboard.
+**Kafka + Spark Structured Streaming — session analytics at 10K events/sec.**
 
-## What it covers (hiring gaps filled)
+Apache Kafka · Spark Structured Streaming · Docker Compose
 
-- Apache Kafka (producer + consumer) — **not in your current 3 projects**
-- Spark Structured Streaming (windowed aggregations, watermarks, stateful sessions)
-- Containerized infra via Docker Compose (Kafka, Zookeeper, Spark)
-- Benchmarked throughput + latency (the metric recruiters want)
+[![CI](https://github.com/adityashirsatrao007/real-time-clickstream/actions/workflows/ci.yml/badge.svg)](https://github.com/adityashirsatrao007/real-time-clickstream/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-231F20?logo=apachekafka&logoColor=white)](https://kafka.apache.org/)
+[![Apache Spark](https://img.shields.io/badge/Apache%20Spark-E25A1C?logo=apachespark&logoColor=white)](https://spark.apache.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## Resume bullet (copy/adapt)
+</div>
 
-> **Real-Time Clickstream Pipeline** · *Apache Kafka, Spark Structured Streaming, Docker*
-> - Built a streaming clickstream analyzer processing **10,000+ events/sec** with **<500ms p99 end-to-end latency**
-> - Implemented tumbling-window sessionization and top-page ranking with Spark Structured Streaming + watermarking for late data
-> - Containerized Kafka/Zookeeper/Spark via Docker Compose; benchmarked throughput before/after tuning (+40%)
-> - Streamed results to a live dashboard; justified Kafka over alternatives in design docs
+A streaming clickstream analyzer. A producer simulates web click events into **Kafka**; a **Spark Structured Streaming** job aggregates sessions, ranks top pages, and flags anomalies in real time — with windowing, watermarking, and stateful sessionization.
 
-## Quick start
+## Features
 
-```bash
-cd 03-real-time-clickstream
-
-# Start Kafka + Zookeeper + Spark
-docker compose up -d
-
-# Run the Spark streaming job (blocking, prints live aggregates)
-docker compose run --rm spark \
-  /opt/bitnami/spark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \
-  /app/streaming/clickstream_analytics.py
-
-# In another terminal — simulate clickstream into Kafka
-docker compose run producer python /app/producer/click_generator.py --rate 1000 --seconds 30
-```
+- **Real-time aggregation** — tumbling-window sessionization, top-page ranking
+- **Late-data handling** — watermarking + output modes for out-of-order events
+- **Anomaly detection** — spike detection in events-per-user
+- **Benchmarkable** — `--benchmark` mode reports throughput and p99 end-to-end latency
+- **One-command infra** — Kafka, Zookeeper, and Spark via Docker Compose
 
 ## Architecture
 
@@ -52,17 +39,38 @@ click_generator ──▶ Kafka topic "clicks"
               results (console / Postgres / dashboard)
 ```
 
-## Metrics to measure & publish
+## Quick start
 
-Use `--benchmark` mode in the generator and the job's progress report:
+```bash
+cd real-time-clickstream
+
+# Start Kafka + Zookeeper + Spark
+docker compose up -d
+
+# Run the Spark streaming job (blocking, prints live aggregates)
+docker compose run --rm spark \
+  /opt/bitnami/spark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \
+  /app/streaming/clickstream_analytics.py
+
+# In another terminal — simulate clickstream into Kafka
+docker compose run producer python /app/producer/click_generator.py --rate 1000 --seconds 30
+```
+
+## Benchmarks
+
+Run the generator with `--benchmark` and read the job's progress report to capture:
 - Throughput (events/sec consumed)
 - p99 end-to-end latency (produce → aggregate → output)
 - Late/watermark-dropped event rate
 
-## Role fit
+## Project layout
 
-| Role | Fit |
-|------|-----|
-| Data Engineer | Primary target — streaming, Kafka, Spark |
-| ML Engineer | Secondary — feature pipelines on streaming data |
-| AI Engineer | Secondary — real-time inference plumbing |
+```
+producer/      clickstream simulator (Kafka producer)
+streaming/     Spark Structured Streaming job
+docker-compose.yml  Kafka + Zookeeper + Spark + producer
+```
+
+## License
+
+[MIT](LICENSE)
