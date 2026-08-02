@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Python
+        run: |
+          python -m py_compile producer/click_generator.py streaming/clickstream_analytics.py
+      - name: Validate docker-compose
+        run: |
+          pip install pyyaml
+          python -c "import yaml; d=yaml.safe_load(open('docker-compose.yml')); assert set(d['services']) == {'zookeeper','kafka','spark','producer'}, d['services']; print('compose OK:', sorted(d['services']))"
+      - name: Unit test generator
+        run: |
+          pip install kafka-python
+          python -c "import ast; ast.parse(open('producer/click_generator.py').read()); print('generator AST OK')"
