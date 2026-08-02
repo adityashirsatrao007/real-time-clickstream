@@ -29,8 +29,8 @@ cd 03-real-time-clickstream
 docker compose up -d
 
 # Run the Spark streaming job (blocking, prints live aggregates)
-docker compose run spark \
-  /opt/spark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \
+docker compose run --rm spark \
+  /opt/bitnami/spark/bin/spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \
   /app/streaming/clickstream_analytics.py
 
 # In another terminal — simulate clickstream into Kafka

@@ -11,6 +11,7 @@ import json
 import random
 import time
 import uuid
+from datetime import datetime, timezone
 
 from kafka import KafkaProducer
 
@@ -26,7 +27,7 @@ def make_event(ts: float) -> dict:
         "page": random.choice(PAGES),
         "locale": random.choice(LOCALES),
         "event_type": random.choice(["pageview", "click", "scroll", "conversion"]),
-        "ts": ts,
+        "ts": datetime.fromtimestamp(ts, tz=timezone.utc).isoformat(),
     }
 
 

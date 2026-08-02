@@ -10,7 +10,7 @@ Run via:
 
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import (
-    col, from_json, window, count, countDistinct, avg, sum as _sum
+    col, from_json, window, count, approx_count_distinct, avg, sum as _sum
 )
 from pyspark.sql.types import (
     StructType, StructField, StringType, TimestampType, DoubleType
@@ -69,7 +69,7 @@ def main():
         .groupBy(window(col("event_ts"), "10 seconds", "5 seconds"), col("page"))
         .agg(
             count("*").alias("events"),
-            countDistinct("user_id").alias("unique_users"),
+            approx_count_distinct("user_id").alias("unique_users"),
         )
         .orderBy(col("window").desc(), col("events").desc())
     )
