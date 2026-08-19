@@ -4,6 +4,8 @@
 
 **Kafka + Spark Structured Streaming — session analytics at 10K events/sec.**
 
+> **⚡ Impact:** sustained throughput of **10K events/sec** · end-to-end **p99 latency < 500 ms** · full-session analytics in Spark Structured Streaming
+
 Apache Kafka · Spark Structured Streaming · Docker Compose
 
 [![CI](https://github.com/adityashirsatrao007/real-time-clickstream/actions/workflows/ci.yml/badge.svg)](https://github.com/adityashirsatrao007/real-time-clickstream/actions/workflows/ci.yml)
